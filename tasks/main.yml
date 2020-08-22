@@ -48,14 +48,14 @@
     user: '{{ item.username }}'
     key: '{{ lookup("file", users_pubkey_location + item.username + ".pub") }}'
   with_items: "{{ users_available }}"
-  when: users_available is defined and item.create_homedir|default(True) and item.upload_key|default(False) and not item.auth_file|default(False)
+  when: users_available is defined and item.create_homedir|default(True) and item.upload_key|default(True) and not item.auth_file|default(False)
 
 - name: Set authorized_keys for users (using auth_file)
   authorized_key:
     user: '{{ item.username }}'
     key: '{{ lookup("file", users_pubkey_location + item.auth_file) }}'
   with_items: '{{ users_available }}'
-  when: users_available is defined and item.create_homedir|default(True) and item.upload_key|default(False) and item.auth_file|default(False)
+  when: users_available is defined and item.create_homedir|default(True) and item.upload_key|default(True) and item.auth_file|default(False)
 
 - name: Remove groups
   group:
