@@ -18,6 +18,15 @@
   with_items: '{{ users_available }}'
   when: users_available is defined
 
+- name: Enable password-less sudo
+  lineinfile:
+    dest: '/etc/sudoers'
+    state: present
+    regexp: '^[%]{{users_default_sudo_group}}'
+    line: '%{{users_default_sudo_group}} ALL=(ALL) NOPASSWD: ALL'
+    validate: 'visudo -cf %s'
+  when: enable_passwordless_sudo|default(True)
+
 - name: Add users
   user:
     name: '{{ item.username }}'
@@ -48,14 +57,14 @@
     user: '{{ item.username }}'
     key: '{{ lookup("file", users_pubkey_location + item.username + ".pub") }}'
   with_items: "{{ users_available }}"
-  when: users_available is defined and item.create_homedir|default(True) and item.upload_key|default(True) and not item.auth_file|default(False)
+  when: users_available is defined and item.create_homedir|default(True) and item.upload_key|default(upload_ssh_key) and not item.auth_file|default(False)
 
 - name: Set authorized_keys for users (using auth_file)
   authorized_key:
     user: '{{ item.username }}'
     key: '{{ lookup("file", users_pubkey_location + item.auth_file) }}'
   with_items: '{{ users_available }}'
-  when: users_available is defined and item.create_homedir|default(True) and item.upload_key|default(True) and item.auth_file|default(False)
+  when: users_available is defined and item.create_homedir|default(True) and item.upload_key|default(upload_ssh_key) and item.auth_file|default(False)
 
 - name: Remove groups
   group:

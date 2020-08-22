@@ -14,6 +14,12 @@ users_homedir: "/home"
 # User homedir permissions
 users_homedir_perm: "0750"
 
+# Enable password sudo - default true
+# enable_passwordless_sudo: true
+
+# upload ssh key - Default true
+upload_ssh_key: true
+
 # User shell
 users_shell: /bin/bash
 
