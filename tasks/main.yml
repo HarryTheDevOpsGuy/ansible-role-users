@@ -10,6 +10,14 @@
   with_items: '{{ users_groups_available }}'
   when: users_groups_available is defined
 
+- name: Allow specified groups to password-less sudo
+  template:
+    src: sudoers.j2
+    dest: /etc/sudoers.d/sudoers
+    validate: 'visudo -cf %s'
+    mode: 0440
+  when: users_groups_available is defined
+
 - name: Add groups for users
   group:
     name: '{{ item.username }}'
@@ -17,15 +25,6 @@
     system: '{{ item.is_system_user|default("no") }}'
   with_items: '{{ users_available }}'
   when: users_available is defined
-
-- name: Enable password-less sudo
-  lineinfile:
-    dest: '/etc/sudoers'
-    state: present
-    regexp: '^[%]{{users_default_sudo_group}}'
-    line: '%{{users_default_sudo_group}} ALL=(ALL) NOPASSWD: ALL'
-    validate: 'visudo -cf %s'
-  when: enable_passwordless_sudo|default(True)
 
 - name: Add users
   user:

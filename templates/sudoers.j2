@@ -1,0 +1,7 @@
+{{ ansible_managed | comment }}
+
+{% for item in users_groups_available %}
+{% if item.sudo %}
+%{{ item.groupname }} ALL=(ALL:ALL) NOPASSWD:ALL
+{% endif %}
+{% endfor %}
