@@ -2,8 +2,15 @@
 users_available: []
 users_deleted: []
 
-users_groups_available: []
 users_groups_deleted: []
+# users_groups_available: []
+users_groups_available:
+  - groupname: '{{users_default_sudo_group}}' # sudo/wheel
+    sudo: False # True/ False password less sudo
+  - groupname: admin
+    sudo: True
+  - groupname: dev
+    sudo: False
 
 # Always will update passwords if they differ. on_create will only set the password for newly created users.
 users_update_password: always
